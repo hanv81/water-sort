@@ -15,7 +15,7 @@ font = pygame.font.Font('freesansbold.ttf', 24)
 fps = 60
 timer = pygame.time.Clock()
 color_choices = 'red', 'darkorange2', 'deepskyblue4', 'dark blue', 'dark green', 'hotpink', 'purple', 'darkslateblue','burlywood4', 'light green', 'yellow', 'white'
-tube_colors = []
+tubes = []
 initial_colors = []
 # 10 - 14 tubes, always start with two empty
 tubes = 10
@@ -31,10 +31,11 @@ def generate_start():
     colors = [i//4 for i in range((tubes_number-2)*4)]
     random.shuffle(colors)
     tubes = [colors[i*4: i*4+4] for i in range(tubes_number-2)] + [[], []]
-    return tubes_number, tubes
+    return tubes
 
 # draw all tubes and colors on screen, as well as indicating what tube was selected
-def draw_tubes(tubes_num, tube_cols):
+def draw_tubes(tubes):
+    tubes_num = len(tubes)
     tube_boxes = []
     if tubes_num % 2 == 0:
         tubes_per_row = tubes_num // 2
@@ -44,16 +45,16 @@ def draw_tubes(tubes_num, tube_cols):
         offset = True
     spacing = WIDTH / tubes_per_row
     for i in range(tubes_per_row):
-        for j in range(len(tube_cols[i])):
-            pygame.draw.rect(screen, color_choices[tube_cols[i][j]], [5 + spacing * i, 200 - (50 * j), 65, 50], 0, 3)
+        for j in range(len(tubes[i])):
+            pygame.draw.rect(screen, color_choices[tubes[i][j]], [5 + spacing * i, 200 - (50 * j), 65, 50], 0, 3)
         box = pygame.draw.rect(screen, 'blue', [5 + spacing * i, 50, 65, 200], 5, 5)
         if select_rect == i:
             pygame.draw.rect(screen, 'green', [5 + spacing * i, 50, 65, 200], 3, 5)
         tube_boxes.append(box)
     if offset:
         for i in range(tubes_per_row - 1):
-            for j in range(len(tube_cols[i + tubes_per_row])):
-                pygame.draw.rect(screen, color_choices[tube_cols[i + tubes_per_row][j]],
+            for j in range(len(tubes[i + tubes_per_row])):
+                pygame.draw.rect(screen, color_choices[tubes[i + tubes_per_row][j]],
                                  [(spacing * 0.5) + 5 + spacing * i, 450 - (50 * j), 65, 50], 0, 3)
             box = pygame.draw.rect(screen, 'blue', [(spacing * 0.5) + 5 + spacing * i, 300, 65, 200], 5, 5)
             if select_rect == i + tubes_per_row:
@@ -61,8 +62,8 @@ def draw_tubes(tubes_num, tube_cols):
             tube_boxes.append(box)
     else:
         for i in range(tubes_per_row):
-            for j in range(len(tube_cols[i + tubes_per_row])):
-                pygame.draw.rect(screen, color_choices[tube_cols[i + tubes_per_row][j]], [5 + spacing * i,
+            for j in range(len(tubes[i + tubes_per_row])):
+                pygame.draw.rect(screen, color_choices[tubes[i + tubes_per_row][j]], [5 + spacing * i,
                                                                                           450 - (50 * j), 65, 50], 0, 3)
             box = pygame.draw.rect(screen, 'blue', [5 + spacing * i, 300, 65, 200], 5, 5)
             if select_rect == i + tubes_per_row:
@@ -116,21 +117,20 @@ while run:
     timer.tick(fps)
     # generate game board on new game, make a copy of the colors in case of restart
     if new_game:
-        tubes, tube_colors = generate_start()
-        initial_colors = copy.deepcopy(tube_colors)
+        tubes = generate_start()
+        initial_colors = copy.deepcopy(tubes)
         new_game = False
     # draw tubes every cycle
     else:
-        tube_rects = draw_tubes(tubes, tube_colors)
-    # check for victory every cycle
-    win = check_victory(tube_colors)
+        tube_rects = draw_tubes(tubes)
+
     # event handling - Quit button exits, clicks select tubes, enter and space for restart and new board
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_SPACE:
-                tube_colors = copy.deepcopy(initial_colors)
+                tubes = copy.deepcopy(initial_colors)
             elif event.key == pygame.K_RETURN:
                 new_game = True
         if event.type == pygame.MOUSEBUTTONDOWN:
@@ -143,16 +143,18 @@ while run:
                 for item in range(len(tube_rects)):
                     if tube_rects[item].collidepoint(event.pos):
                         dest_rect = item
-                        tube_colors = calc_move(tube_colors, select_rect, dest_rect)
+                        tubes = calc_move(tubes, select_rect, dest_rect)
                         selected = False
                         select_rect = 100
-    # draw 'victory' text when winning in middle, always show restart and new board text at top
-    if win:
+
+    if check_victory(tubes):
         victory_text = font.render('You Won! Press Enter for a new board!', True, 'white')
         screen.blit(victory_text, (30, 265))
+
     restart_text = font.render('Stuck? Space-Restart, Enter-New Board!', True, 'white')
     screen.blit(restart_text, (10, 10))
 
     # display all drawn items on screen, exit pygame if run == False
     pygame.display.flip()
+
 pygame.quit()
