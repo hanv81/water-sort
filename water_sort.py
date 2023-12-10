@@ -27,11 +27,11 @@ win = False
 
 # select a number of tubes and pick random colors upon new game setup
 def generate_start():
-    tubes_number = random.randint(10, 14)
-    colors = [i//4 for i in range((tubes_number-2)*4)]
+    tubes_number = random.randint(8, 12)
+    colors = [i//4 for i in range(tubes_number*4)]
     random.shuffle(colors)
-    tubes = [colors[i*4: i*4+4] for i in range(tubes_number-2)] + [[], []]
-    return tubes
+
+    return [colors[i*4: i*4+4] for i in range(tubes_number)] + [[], []]
 
 # draw all tubes and colors on screen, as well as indicating what tube was selected
 def draw_tubes(tubes):
