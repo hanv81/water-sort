@@ -46,7 +46,8 @@ def draw_tubes(tubes):
             pygame.draw.rect(screen, color_choices[tubes[i][j]], [5 + spacing * i, 200 - (50 * j), 65, 50], 0, 3)
 
         box_color = 'green' if select_rect == i else 'blue'
-        box = pygame.draw.rect(screen, box_color, [5 + spacing * i, 50, 65, 200], 5, 5)
+        width = 3 if select_rect == i else 5
+        box = pygame.draw.rect(screen, box_color, [5 + spacing * i, 50, 65, 200], width, 5)
         tube_boxes.append(box)
 
     if offset:
@@ -54,18 +55,18 @@ def draw_tubes(tubes):
             for j in range(len(tubes[i + tubes_per_row])):
                 pygame.draw.rect(screen, color_choices[tubes[i + tubes_per_row][j]],
                                  [(spacing * 0.5) + 5 + spacing * i, 450 - (50 * j), 65, 50], 0, 3)
-            box = pygame.draw.rect(screen, 'blue', [(spacing * 0.5) + 5 + spacing * i, 300, 65, 200], 5, 5)
-            if select_rect == i + tubes_per_row:
-                pygame.draw.rect(screen, 'green', [(spacing * 0.5) + 5 + spacing * i, 300, 65, 200], 3, 5)
+            box_color = 'green' if select_rect == i + tubes_per_row else 'blue'
+            width = 3 if select_rect == i + tubes_per_row else 5
+            box = pygame.draw.rect(screen, box_color, [(spacing * 0.5) + 5 + spacing * i, 300, 65, 200], width, 5)
             tube_boxes.append(box)
     else:
         for i in range(tubes_per_row):
             for j in range(len(tubes[i + tubes_per_row])):
                 pygame.draw.rect(screen, color_choices[tubes[i + tubes_per_row][j]], [5 + spacing * i,
                                                                                           450 - (50 * j), 65, 50], 0, 3)
-            box = pygame.draw.rect(screen, 'blue', [5 + spacing * i, 300, 65, 200], 5, 5)
-            if select_rect == i + tubes_per_row:
-                pygame.draw.rect(screen, 'green', [5 + spacing * i, 300, 65, 200], 3, 5)
+            box_color = 'green' if select_rect == i + tubes_per_row else 'blue'
+            width = 3 if select_rect == i + tubes_per_row else 5
+            box = pygame.draw.rect(screen, box_color, [5 + spacing * i, 300, 65, 200], width, 5)
             tube_boxes.append(box)
     return tube_boxes
 
