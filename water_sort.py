@@ -14,7 +14,7 @@ pygame.display.set_caption('Water Sort PyGame')
 font = pygame.font.Font('freesansbold.ttf', 24)
 fps = 60
 timer = pygame.time.Clock()
-color_choices = 'red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray','brown', 'light green', 'yellow', 'white'
+color_choices = 'red', 'darkorange2', 'deepskyblue4', 'dark blue', 'dark green', 'hotpink', 'purple', 'darkslateblue','burlywood4', 'light green', 'yellow', 'white'
 tube_colors = []
 initial_colors = []
 # 10 - 14 tubes, always start with two empty
