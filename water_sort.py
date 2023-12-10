@@ -14,8 +14,7 @@ pygame.display.set_caption('Water Sort PyGame')
 font = pygame.font.Font('freesansbold.ttf', 24)
 fps = 60
 timer = pygame.time.Clock()
-color_choices = ['red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray',
-                 'brown', 'light green', 'yellow', 'white']
+color_choices = 'red', 'orange', 'light blue', 'dark blue', 'dark green', 'pink', 'purple', 'dark gray','brown', 'light green', 'yellow', 'white'
 tube_colors = []
 initial_colors = []
 # 10 - 14 tubes, always start with two empty
@@ -117,18 +116,13 @@ def calc_move(colors, selected_rect, destination):
 
 
 # check if every tube with colors is 4 long and all the same color. That's how we win
-def check_victory(colors):
-    for i in range(len(colors)):
-        if len(colors[i]) > 0:
-            if len(colors[i]) != 4:
-                return False
-            else:
-                main_color = colors[i][-1]
-                for j in range(len(colors[i])):
-                    if colors[i][j] != main_color:
-                        return False
-    return True
+def check_tube_done(tube):
+    if len(tube) == 0: return True
+    return False if len(tube) < 4 or any(tube[i] != tube[-1] for i in range(len(tube)-1)) else True
 
+def check_victory(colors):
+    # return False if any(check_tube_done(colors[i]) is False for i in range(len(colors))) else True
+    return False if any(not check_tube_done(colors[i]) for i in range(len(colors))) else True
 
 # main game loop
 run = True
