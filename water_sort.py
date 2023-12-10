@@ -36,21 +36,19 @@ def generate_start():
 # draw all tubes and colors on screen, as well as indicating what tube was selected
 def draw_tubes(tubes):
     tubes_num = len(tubes)
-    tube_boxes = []
-    if tubes_num % 2 == 0:
-        tubes_per_row = tubes_num // 2
-        offset = False
-    else:
-        tubes_per_row = tubes_num // 2 + 1
-        offset = True
+    tubes_per_row = (tubes_num+1) // 2
+    offset = tubes_num % 2 == 1
     spacing = WIDTH / tubes_per_row
+
+    tube_boxes = []
     for i in range(tubes_per_row):
         for j in range(len(tubes[i])):
             pygame.draw.rect(screen, color_choices[tubes[i][j]], [5 + spacing * i, 200 - (50 * j), 65, 50], 0, 3)
-        box = pygame.draw.rect(screen, 'blue', [5 + spacing * i, 50, 65, 200], 5, 5)
-        if select_rect == i:
-            pygame.draw.rect(screen, 'green', [5 + spacing * i, 50, 65, 200], 3, 5)
+
+        box_color = 'green' if select_rect == i else 'blue'
+        box = pygame.draw.rect(screen, box_color, [5 + spacing * i, 50, 65, 200], 5, 5)
         tube_boxes.append(box)
+
     if offset:
         for i in range(tubes_per_row - 1):
             for j in range(len(tubes[i + tubes_per_row])):
